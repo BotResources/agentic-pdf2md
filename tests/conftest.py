@@ -5,6 +5,7 @@ import pytest
 import fitz
 import base64
 import tempfile
+import os
 from pathlib import Path
 
 @pytest.fixture
@@ -22,8 +23,17 @@ def simple_pdf_path():
     
     yield tmp_path
     
-    # Cleanup
-    Path(tmp_path).unlink(missing_ok=True)
+    # Cleanup - force close any handles and retry deletion
+    try:
+        os.remove(tmp_path)
+    except PermissionError:
+        # On Windows, sometimes files are still locked
+        import time
+        time.sleep(0.1)
+        try:
+            os.remove(tmp_path)
+        except:
+            pass  # Best effort cleanup
 
 @pytest.fixture
 def pdf_base64():

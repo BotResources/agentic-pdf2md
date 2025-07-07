@@ -32,7 +32,34 @@ class Base64DecodingError(PDFContentError):
     """Raised when base64 decoding fails."""
     pass
 
+class PDFProcessingError(AgenticPDF2MDError):
+    """Raised when PDF processing fails."""
+    pass
 
-class FileNotFoundError(PDFLoadingError):
-    """Raised when PDF file is not found."""
+
+class ImageExtractionError(PDFProcessingError):
+    """Raised when image extraction fails."""
+    pass
+
+
+class ScreenshotGenerationError(PDFProcessingError):
+    """Raised when screenshot generation fails."""
+    pass
+
+
+class TextExtractionError(PDFProcessingError):
+    """Raised when text extraction fails."""
+    pass
+
+
+class PageProcessingError(PDFProcessingError):
+    """Raised when processing a specific page fails."""
+    def __init__(self, page_number: int, message: str, original_error: Exception = None):
+        self.page_number = page_number
+        self.original_error = original_error
+        super().__init__(f"Page {page_number}: {message}")
+
+
+class ConfigurationError(AgenticPDF2MDError):
+    """Raised when configuration is invalid."""
     pass
