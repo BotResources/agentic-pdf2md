@@ -7,7 +7,7 @@ import tempfile
 import os
 from pathlib import Path
 from agentic_pdf2md import RawPDF, ProcessedPDF
-from agentic_pdf2md.config import ProcessingConfig
+from agentic_pdf2md.config import PreProcessingConfig
 
 
 @pytest.fixture

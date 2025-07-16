@@ -4,7 +4,7 @@ Test ProcessedPDF initialization and processing state management.
 import pytest
 from unittest.mock import Mock
 from agentic_pdf2md import RawPDF, ProcessedPDF
-from agentic_pdf2md.config import ProcessingConfig
+from agentic_pdf2md.config import PreProcessingConfig
 
 
 class TestProcessedPDFInitialization:
@@ -17,14 +17,14 @@ class TestProcessedPDFInitialization:
 
         assert processed_pdf.raw_pdf is raw_pdf
         assert processed_pdf.config is not None
-        assert isinstance(processed_pdf.config, ProcessingConfig)
+        assert isinstance(processed_pdf.config, PreProcessingConfig)
         assert not processed_pdf.pages
         assert not processed_pdf.images
 
     def test_initialization_with_custom_config(self, simple_pdf_path):
         """Test ProcessedPDF initializes with custom config."""
         raw_pdf = RawPDF(simple_pdf_path)
-        custom_config = ProcessingConfig(screenshot_dpi=2.0, image_format="jpeg")
+        custom_config = PreProcessingConfig(screenshot_dpi=2.0, image_format="jpeg")
         processed_pdf = ProcessedPDF(raw_pdf, custom_config)
 
         assert processed_pdf.config is custom_config

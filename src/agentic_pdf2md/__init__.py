@@ -10,6 +10,7 @@ from .models.raw_pdf import RawPDF
 from .models.processed_pdf import ProcessedPDF, PDFProcessedPage, ImageReference
 from .models.llm_runner import LLMRunner
 from .models.llm_messages import BaseLLMMessage, SystemMessage, UserMessage, AIMessage, ToolCall, ToolResponseMessage
+from .models.cancellation_token import CancellationToken
 from .exceptions import (
     AgenticPDF2MDError,
     PDFInitializationError,
@@ -24,6 +25,7 @@ from .exceptions import (
     PageProcessingError,
     ConfigurationError,
 )
+from .config import PreProcessingConfig, ParallelProcessingConfig, SerialProcessingConfig, ProcessingConfig
 
 __all__ = [
     # Models
@@ -32,6 +34,7 @@ __all__ = [
     "ProcessedPDF",
     "PDFProcessedPage", 
     "ImageReference",
+    "CancellationToken",
     # Messages
     "BaseLLMMessage",
     "SystemMessage",
@@ -52,4 +55,9 @@ __all__ = [
     "TextExtractionError",
     "PageProcessingError",
     "ConfigurationError",
+    # Configurations
+    "PreProcessingConfig",
+    "ParallelProcessingConfig",
+    "SerialProcessingConfig",
+    "ProcessingConfig",
 ]

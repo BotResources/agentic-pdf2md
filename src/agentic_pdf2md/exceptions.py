@@ -63,3 +63,8 @@ class PageProcessingError(PDFProcessingError):
 class ConfigurationError(AgenticPDF2MDError):
     """Raised when configuration is invalid."""
     pass
+
+class OperationCancelledException(AgenticPDF2MDError):
+    """Raised when an operation is cancelled."""
+    def __init__(self, message: str = "Operation was cancelled."):
+        super().__init__(message)

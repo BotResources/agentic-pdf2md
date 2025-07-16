@@ -3,18 +3,18 @@ Test ProcessedPDF configuration-driven behavior.
 """
 import pytest
 from agentic_pdf2md import RawPDF, ProcessedPDF
-from agentic_pdf2md.config import ProcessingConfig
+from agentic_pdf2md.config import PreProcessingConfig
 
 
 class TestConfigDrivenBehavior:
-    """Test that ProcessingConfig settings affect behavior."""
+    """Test that PreProcessingConfig settings affect behavior."""
     
     def test_screenshot_format_config(self, simple_pdf_path):
         """Test that screenshot format configuration is applied."""
         raw_pdf = RawPDF(simple_pdf_path)
         
         # Test with PNG format
-        config_png = ProcessingConfig(screenshot_format="png")
+        config_png = PreProcessingConfig(screenshot_format="png")
         processed_pdf_png = ProcessedPDF(raw_pdf, config_png)
         processed_pdf_png.process()
         
@@ -27,7 +27,7 @@ class TestConfigDrivenBehavior:
         raw_pdf = RawPDF(simple_pdf_path)
         
         # Test with different image formats
-        config_png = ProcessingConfig(image_format="png")
+        config_png = PreProcessingConfig(image_format="png")
         processed_pdf = ProcessedPDF(raw_pdf, config_png)
         
         # Just verify config is stored correctly
@@ -39,8 +39,8 @@ class TestConfigDrivenBehavior:
         raw_pdf2 = RawPDF(simple_pdf_path)
         
         # Test with different DPI settings
-        config_low = ProcessingConfig(screenshot_dpi=1.0)
-        config_high = ProcessingConfig(screenshot_dpi=2.0)
+        config_low = PreProcessingConfig(screenshot_dpi=1.0)
+        config_high = PreProcessingConfig(screenshot_dpi=2.0)
         
         processed_pdf_low = ProcessedPDF(raw_pdf1, config_low)
         processed_pdf_high = ProcessedPDF(raw_pdf2, config_high)
@@ -59,7 +59,7 @@ class TestConfigDrivenBehavior:
         raw_pdf = RawPDF(simple_pdf_path)
         
         # Test with layout hints enabled
-        config_with_hints = ProcessingConfig(include_layout_hints=True)
+        config_with_hints = PreProcessingConfig(include_layout_hints=True)
         processed_pdf = ProcessedPDF(raw_pdf, config_with_hints)
         processed_pdf.process()
         
@@ -75,7 +75,7 @@ class TestConfigDrivenBehavior:
         """Test that max_image_size configuration is stored."""
         raw_pdf = RawPDF(simple_pdf_path)
         
-        config = ProcessingConfig(max_image_size=1024)
+        config = PreProcessingConfig(max_image_size=1024)
         processed_pdf = ProcessedPDF(raw_pdf, config)
         
         assert processed_pdf.config.max_image_size == 1024

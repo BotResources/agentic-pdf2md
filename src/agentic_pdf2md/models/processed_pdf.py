@@ -6,7 +6,7 @@ import asyncio
 import fitz
 
 from .raw_pdf import RawPDF
-from ..config import ProcessingConfig
+from ..config import PreProcessingConfig
 from ..exceptions import (
     PDFProcessingError,
     ImageExtractionError,
@@ -58,7 +58,7 @@ class PDFProcessedPage:
 
 
 class ProcessedPDF:
-    def __init__(self, raw_pdf: RawPDF, config: Optional[ProcessingConfig] = None):
+    def __init__(self, raw_pdf: RawPDF, config: Optional[PreProcessingConfig] = None):
         """
         Initialize ProcessedPDF with a RawPDF instance.
         
@@ -66,7 +66,7 @@ class ProcessedPDF:
         :param config: Processing configuration. If None, uses default config.
         """
         self.raw_pdf = raw_pdf
-        self.config = config or ProcessingConfig()
+        self.config = config or PreProcessingConfig()
         self.pages: List[PDFProcessedPage] = []
         self.images: Dict[str, bytes] = {}  # image_id -> image bytes
         self._processed = False

@@ -1,14 +1,19 @@
 """
 Configuration for PDF processing.
 """
+import logging
 from dataclasses import dataclass
 from typing import Optional, Dict, Any
 
 from .exceptions import ConfigurationError
+from .models.cancellation_token import CancellationToken
+from .models.llm_runner import LLMRunner
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
-class ProcessingConfig:
+class PreProcessingConfig:
     """Configuration for PDF processing operations."""
     
     # Screenshot settings
@@ -67,6 +72,107 @@ class ProcessingConfig:
         }
     
     @classmethod
-    def from_dict(cls, config_dict: Dict[str, Any]) -> "ProcessingConfig":
+    def from_dict(cls, config_dict: Dict[str, Any]) -> "PreProcessingConfig":
         """Create configuration from dictionary."""
         return cls(**config_dict)
+    
+
+@dataclass
+class ParallelProcessingConfig:
+    """Configuration for parallel processing of PDF files."""
+    num_workers: int = 10
+    cancellation_token: CancellationToken
+    generator_runner: LLMRunner
+    critic_runner: LLMRunner
+
+    def __post_init__(self):
+        """Validate configuration after initialization."""
+        if self.num_workers <= 0:
+            raise ConfigurationError("num_workers must be greater than 0")
+
+    def _validate(self):
+        """Validate configuration values."""
+        if not isinstance(self.num_workers, int):
+            raise ConfigurationError("num_workers must be an integer")
+        if self.num_workers <= 0:
+            raise ConfigurationError("num_workers must be greater than 0")
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert configuration to dictionary."""
+        return {
+            "num_workers": self.num_workers,
+        }
+    
+    @classmethod
+    def from_dict(cls, config_dict: Dict[str, Any]) -> "ParallelProcessingConfig":
+        """Create configuration from dictionary."""
+        return cls(**config_dict)
+    
+
+
+@dataclass
+class SerialProcessingConfig:
+    """Configuration for serial processing of PDF files."""
+    backward_pages: int = 1  # Number of pages that will be included as context for each page
+
+    def __post_init__(self):
+        """Validate configuration after initialization."""
+        if self.backward_pages < 0:
+            raise ConfigurationError("backward_pages must be non-negative")
+    
+    def _validate(self):
+        """Validate configuration values."""
+        if not isinstance(self.backward_pages, int):
+            raise ConfigurationError("backward_pages must be an integer")
+        if self.backward_pages < 0:
+            raise ConfigurationError("backward_pages must be non-negative")
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert configuration to dictionary."""
+        return {
+            "backward_pages": self.backward_pages,
+        }
+    
+    @classmethod
+    def from_dict(cls, config_dict: Dict[str, Any]) -> "SerialProcessingConfig":
+        """Create configuration from dictionary."""
+        return cls(**config_dict)
+
+@dataclass
+class ProcessingConfig:
+    """Configuration for processing PDF files."""
+    cancellation_token: CancellationToken
+    pre_processing: PreProcessingConfig = PreProcessingConfig()
+    parallel_processing: Optional[ParallelProcessingConfig] = None  # If None, no parallel processing
+    serial_processing: Optional[SerialProcessingConfig] = None  # If None, no serial processing
+
+    def __post_init__(self):
+        """Validate configuration after initialization."""
+        self._validate()
+
+    def _validate(self):
+        """Validate configuration values."""
+        pass # Placeholder for future validation logic
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert configuration to dictionary."""
+        config_dict = {
+            "pre_processing": self.pre_processing.to_dict(),
+            "parallel_processing": self.parallel_processing.to_dict() if self.parallel_processing else None,
+            "serial_processing": self.serial_processing.to_dict() if self.serial_processing else None,
+        }
+        return config_dict
+    
+    @classmethod
+    def from_dict(cls, config_dict: Dict[str, Any], cancellation_token: CancellationToken) -> "ProcessingConfig":
+        """Create configuration from dictionary."""
+        pre_processing = PreProcessingConfig.from_dict(config_dict.get("pre_processing", {}))
+        parallel_processing = ParallelProcessingConfig.from_dict(config_dict["parallel_processing"]) if config_dict.get("parallel_processing") else None
+        serial_processing = SerialProcessingConfig.from_dict(config_dict["serial_processing"]) if config_dict.get("serial_processing") else None
+        
+        return cls(
+            pre_processing=pre_processing, 
+            parallel_processing=parallel_processing, 
+            serial_processing=serial_processing, 
+            cancellation_token=cancellation_token,
+        )
