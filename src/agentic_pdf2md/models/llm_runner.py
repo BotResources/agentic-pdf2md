@@ -1,5 +1,12 @@
-from typing import List, Any, Optional
+"""
+Class used to run LLMs (Large Language Models) with a given prompt.
+We define an abstract base class for LLM runners.
+The developer should implement the `run` method to execute the LLM with the provided messages.
+"""
+
+from typing import List, Any, Optional, Dict
 from abc import ABC, abstractmethod
+from .llm_messages import BaseLLMMessage, AIMessage
 
 class LLMRunner(ABC):
     """
@@ -9,16 +16,16 @@ class LLMRunner(ABC):
     @abstractmethod
     async def run(
         self, 
-        messages: List[Any],
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
+        messages: List[BaseLLMMessage],
+        tools: Optional[List[Dict[str, Any]]] = None,
         *args,
         **kwargs,
-    ) -> str:
+    ) -> AIMessage:
         """
-        Run the LLM with the given prompt and return the response.
+        Run the LLM with the given messages and return the response.
 
-        :param prompt: The input prompt to send to the LLM.
-        :return: The response from the LLM.
+        :param messages: List of messages to send to the LLM.
+        :param tools: Optional list of tool definitions.
+        :return: The AI response message.
         """
         raise NotImplementedError("Subclasses must implement this method.")
