@@ -1,7 +1,6 @@
 """
 Test ProcessedPDF configuration-driven behavior.
 """
-import pytest
 from agentic_pdf2md import RawPDF, ProcessedPDF
 from agentic_pdf2md.config import PreProcessingConfig
 

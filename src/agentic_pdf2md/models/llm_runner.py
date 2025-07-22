@@ -4,9 +4,19 @@ We define an abstract base class for LLM runners.
 The developer should implement the `run` method to execute the LLM with the provided messages.
 """
 
-from typing import List, Any, Optional, Dict
+from typing import List, Any, Optional, Dict, TypeVar, Union, Awaitable, Callable
 from abc import ABC, abstractmethod
 from .llm_messages import BaseLLMMessage, AIMessage
+
+
+T = TypeVar('T', bound='LLMRunner')
+
+LLMRunnerFactory = Union[
+    Callable[[], T],
+    Callable[[], Awaitable[T]],
+]
+
+LLMRunnerOrFactory = Union[T, LLMRunnerFactory[T]]
 
 class LLMRunner(ABC):
     """
@@ -18,7 +28,6 @@ class LLMRunner(ABC):
         self, 
         messages: List[BaseLLMMessage],
         tools: Optional[List[Dict[str, Any]]] = None,
-        *args,
         **kwargs,
     ) -> AIMessage:
         """

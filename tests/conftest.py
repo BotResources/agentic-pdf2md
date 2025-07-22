@@ -6,7 +6,7 @@ import fitz
 import base64
 import tempfile
 import os
-from pathlib import Path
+
 
 @pytest.fixture
 def simple_pdf_path():

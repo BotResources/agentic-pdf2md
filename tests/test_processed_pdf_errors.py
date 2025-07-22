@@ -2,14 +2,12 @@
 Test ProcessedPDF error handling and exception propagation.
 """
 import pytest
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 from agentic_pdf2md import RawPDF, ProcessedPDF
 from agentic_pdf2md.exceptions import (
     PDFProcessingError,
     PageProcessingError,
     ImageExtractionError,
-    ScreenshotGenerationError,
-    TextExtractionError
 )
 
 
